@@ -2,6 +2,7 @@ name = "openrar-benchmark-submission"
 main = "src/index.ts"
 compatibility_date = "2025-02-01"
 compatibility_flags = ["nodejs_compat"]
+account_id = "54b031fbc47d52b647fa855a290897ad"
 
 [vars]
 ENVIRONMENT = "production"
@@ -9,14 +10,11 @@ GITHUB_REPO = "geometric-dev/openrar"
 GITHUB_TARGET_BRANCH = "v2"
 
 # Cloudflare D1 relational SQLite database binding
-# To create database: npx wrangler d1 create openrar-benchmarks
-# Replace database_id with your real D1 database UUID after running create
 [[d1_databases]]
 binding = "DB"
 database_name = "openrar-benchmarks"
-database_id = "openrar-benchmarks-d1-placeholder"
+database_id = "2fc4f74c-ca83-4aaa-b091-e71a531860d9"
 
 # Daily cron trigger to execute sync routines / health checks
 [triggers]
 crons = ["0 0 * * *"]
-
