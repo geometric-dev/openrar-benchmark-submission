@@ -91,10 +91,10 @@ Run `openrar b --json` and pipe directly to the ingestion API:
 
 ```bash
 # Windows (PowerShell)
-openrar b --json | Invoke-RestMethod -Uri "https://openrar-benchmark-submission.openrar-benchmark-submission.workers.dev/api/submit" -Method Post -ContentType "application/json"
+openrar b --json | Invoke-RestMethod -Uri "https://benchmark.openrar.workers.dev/api/submit" -Method Post -ContentType "application/json"
 
 # Linux / macOS (cURL)
-openrar b --json | curl -s -X POST -H "Content-Type: application/json" -d @- https://openrar-benchmark-submission.openrar-benchmark-submission.workers.dev/api/submit
+openrar b --json | curl -s -X POST -H "Content-Type: application/json" -d @- https://benchmark.openrar.workers.dev/api/submit
 ```
 
 ### Submitting via Python Helper
