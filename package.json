@@ -1,0 +1,35 @@
+{
+  "name": "openrar-benchmark-submission",
+  "version": "1.0.0",
+  "description": "Cloud submission ingestion and leaderboard service for OpenRAR RARMark v2.0 hardware benchmarks",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "d1:local": "wrangler d1 execute openrar-benchmarks --local --file=./schema.sql",
+    "d1:remote": "wrangler d1 execute openrar-benchmarks --remote --file=./schema.sql"
+  },
+  "keywords": [
+    "openrar",
+    "benchmark",
+    "cloudflare-workers",
+    "d1",
+    "sqlite",
+    "leaderboard",
+    "rarmark"
+  ],
+  "author": "Geometric Dev",
+  "license": "MIT",
+  "dependencies": {
+    "hono": "^4.7.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261023.1",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.7",
+    "wrangler": "^4.156.0"
+  }
+}
+
