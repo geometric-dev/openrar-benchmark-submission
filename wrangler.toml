@@ -1,4 +1,4 @@
-name = "openrar-benchmark-submission"
+name = "benchmark"
 main = "src/index.ts"
 compatibility_date = "2025-02-01"
 compatibility_flags = ["nodejs_compat"]
