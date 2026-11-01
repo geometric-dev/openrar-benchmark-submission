@@ -70,6 +70,22 @@ describe('API Endpoints', () => {
     expect(body.error).toBe('Benchmark validation failed');
   });
 
+  it('POST /api/submit rejects oversized payload with 413', async () => {
+    const res = await app.request(
+      '/api/submit',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Content-Length': '20000' },
+        body: JSON.stringify({ benchmark: 'openrar_rarmark_v2' }),
+      },
+      mockEnv
+    );
+    expect(res.status).toBe(413);
+    const body: any = await res.json();
+    expect(body.success).toBe(false);
+    expect(body.error).toContain('Payload too large');
+  });
+
   it('POST /api/submit accepts valid benchmark payload', async () => {
     const validPayload = {
       benchmark: 'openrar_rarmark_v2',

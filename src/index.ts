@@ -41,9 +41,30 @@ app.get('/', async c => {
   }
 });
 
+// In-memory isolate-level burst rate limiter (sub-millisecond, absorbs spam without hitting D1)
+const ipBurstMap = new Map<string, number>();
+function checkBurst(ipHash: string, minIntervalMs = 1500): boolean {
+  const now = Date.now();
+  const last = ipBurstMap.get(ipHash) || 0;
+  if (now - last < minIntervalMs) {
+    return false;
+  }
+  ipBurstMap.set(ipHash, now);
+  if (ipBurstMap.size > 10000) {
+    ipBurstMap.clear();
+  }
+  return true;
+}
+
 // Ingestion API: OpenRAR client submissions
 app.post('/api/submit', async c => {
   try {
+    // 1. Content-Length guard: reject oversized payloads (> 16 KiB) immediately (0 D1 operations)
+    const contentLength = Number(c.req.header('content-length') || '0');
+    if (contentLength > 16384) {
+      return c.json({ success: false, error: 'Payload too large (maximum 16 KiB)' }, 413);
+    }
+
     const rawIp =
       c.req.header('cf-connecting-ip') ||
       c.req.header('x-forwarded-for')?.split(',')[0].trim() ||
@@ -52,18 +73,15 @@ app.post('/api/submit', async c => {
 
     const ipHash = await hashIp(rawIp);
 
-    // Rate limit: 5 submissions per 10 minutes per IP
-    const rateCheck = await checkRateLimit(c.env.DB, ipHash, 5, 600);
-    if (!rateCheck.allowed) {
+    // 2. Isolate-level fast burst guard: reject requests faster than 1 per 1.5s per IP (0 D1 operations)
+    if (c.env.ENVIRONMENT !== 'test' && !checkBurst(ipHash, 1500)) {
       return c.json(
-        {
-          success: false,
-          error: 'Rate limit exceeded: maximum 5 benchmark submissions per 10 minutes.',
-        },
+        { success: false, error: 'Burst rate limit: please wait a moment between submissions.' },
         429
       );
     }
 
+    // 3. Parse JSON body
     let payload: OpenRarBenchmarkPayload;
     try {
       payload = await c.req.json();
@@ -71,7 +89,8 @@ app.post('/api/submit', async c => {
       return c.json({ success: false, error: 'Invalid JSON body' }, 400);
     }
 
-    // Validate schema, mathematical formula, decompression integrity, and physical plausibility
+    // 4. Validate schema, mathematical formula, decompression integrity, and scaling bounds
+    // Done in pure CPU memory BEFORE checking D1 to prevent D1 quota exhaustion from invalid spam
     const validation = validateBenchmarkPayload(payload);
     if (!validation.valid) {
       return c.json(
@@ -81,6 +100,18 @@ app.post('/api/submit', async c => {
           details: validation.errors,
         },
         422
+      );
+    }
+
+    // 5. Persistent D1 Rate limit: 5 approved submissions per 10 minutes per IP
+    const rateCheck = await checkRateLimit(c.env.DB, ipHash, 5, 600);
+    if (!rateCheck.allowed) {
+      return c.json(
+        {
+          success: false,
+          error: 'Rate limit exceeded: maximum 5 benchmark submissions per 10 minutes.',
+        },
+        429
       );
     }
 
