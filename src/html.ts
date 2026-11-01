@@ -240,8 +240,10 @@ export function renderDashboardHtml(
 
     <div class="cli-box">
       <h3>Submit Your Machine via CLI</h3>
-      <p>Run the native OpenRAR benchmark with JSON output and pipe directly to the ingestion API:</p>
-      <div class="code-block">openrar b --json | curl -s -X POST -H "Content-Type: application/json" -d @- https://benchmarks.openrar.dev/api/submit</div>
+      <p>Run the native OpenRAR benchmark with direct submission:</p>
+      <div class="code-block">openrar b --submit</div>
+      <p style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);">Or pipe JSON via curl:</p>
+      <div class="code-block" style="font-size: 0.8rem; color: var(--text-muted);">openrar b --json | curl -s -X POST -H "Content-Type: application/json" -d @- https://benchmark.openrar.workers.dev/api/submit</div>
     </div>
 
     <div class="table-container">
