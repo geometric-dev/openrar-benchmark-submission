@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS submissions (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     system TEXT NOT NULL,
-    submitter TEXT NOT NULL,
     version TEXT NOT NULL,
     cpu_brand TEXT NOT NULL,
     arch TEXT NOT NULL,

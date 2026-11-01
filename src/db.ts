@@ -60,7 +60,6 @@ export async function insertOrUpdateSubmission(
 ): Promise<{ id: string; rank: number; isUpdate: boolean; slug: string }> {
   const id = crypto.randomUUID();
   const slug = generateSlug(payload, id);
-  const submitter = sanitizeString(payload.submitter, 48, 'Anonymous');
   const system = sanitizeString(payload.system, 80, 'Custom Rig');
   const version = sanitizeString(payload.version, 16, '2.0.1');
   const cpuBrand = sanitizeString(payload.cpu.brand, 80, 'Unknown CPU');
@@ -90,7 +89,6 @@ export async function insertOrUpdateSubmission(
         `UPDATE submissions SET
           updated_at = CURRENT_TIMESTAMP,
           system = ?,
-          submitter = ?,
           version = ?,
           dict_size_bytes = ?,
           method = ?,
@@ -108,7 +106,6 @@ export async function insertOrUpdateSubmission(
       )
       .bind(
         system,
-        submitter,
         version,
         payload.config.dict_size_bytes || 4194304,
         payload.config.method || 3,
@@ -127,13 +124,13 @@ export async function insertOrUpdateSubmission(
     await db
       .prepare(
         `INSERT INTO submissions (
-          id, system, submitter, version, cpu_brand, arch, logical_cores,
+          id, system, version, cpu_brand, arch, logical_cores,
           simd_features, threads, dict_size_bytes, method, mem_bw_gbps,
           st_compress_kbps, mt_compress_kbps, mt_decompress_kbps,
           speedup_ratio, rarmark_score, verified, ip_hash, status,
           sync_status, user_agent, slug
         ) VALUES (
-          ?, ?, ?, ?, ?, ?, ?,
+          ?, ?, ?, ?, ?, ?,
           ?, ?, ?, ?, ?,
           ?, ?, ?,
           ?, ?, 1, ?, ?,
@@ -143,7 +140,6 @@ export async function insertOrUpdateSubmission(
       .bind(
         targetId,
         system,
-        submitter,
         version,
         cpuBrand,
         arch,
@@ -222,7 +218,6 @@ export async function getLeaderboard(
       rank: offset + idx + 1,
       id: row.id,
       system: row.system,
-      submitter: row.submitter,
       cpu_brand: row.cpu_brand,
       arch: row.arch,
       logical_cores: row.logical_cores,
@@ -270,7 +265,6 @@ export async function getExportData(
       benchmark: 'openrar_rarmark_v2',
       version: row.version,
       system: row.system,
-      submitter: row.submitter,
       created_at: row.created_at,
       cpu: {
         brand: row.cpu_brand,

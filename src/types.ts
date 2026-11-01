@@ -25,7 +25,6 @@ export interface OpenRarBenchmarkPayload {
   benchmark: string;
   version: string;
   system?: string;
-  submitter?: string;
   cpu: CpuInfo;
   config: BenchmarkConfig;
   results: BenchmarkResults;
@@ -36,7 +35,6 @@ export interface SubmissionRecord {
   created_at: string;
   updated_at: string;
   system: string;
-  submitter: string;
   version: string;
   cpu_brand: string;
   arch: string;
@@ -64,7 +62,6 @@ export interface LeaderboardEntry {
   rank: number;
   id: string;
   system: string;
-  submitter: string;
   cpu_brand: string;
   arch: string;
   logical_cores: number;

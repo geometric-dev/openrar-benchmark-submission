@@ -91,7 +91,6 @@ describe('API Endpoints', () => {
       benchmark: 'openrar_rarmark_v2',
       version: '2.0.1',
       system: 'Test Rig',
-      submitter: 'Tester',
       cpu: {
         brand: 'AMD Ryzen 9 7950X',
         arch: 'x86_64',

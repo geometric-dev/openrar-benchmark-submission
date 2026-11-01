@@ -7,7 +7,6 @@ describe('OpenRAR Benchmark Validator', () => {
     benchmark: 'openrar_rarmark_v2',
     version: '2.0.1',
     system: 'Apple MacBook Pro M3 Max',
-    submitter: 'Linus',
     cpu: {
       brand: 'Apple M3 Max',
       arch: 'ARM64',

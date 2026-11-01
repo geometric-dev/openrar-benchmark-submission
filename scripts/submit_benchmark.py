@@ -5,7 +5,7 @@ Executes `openrar b --json` on the host machine and posts the cryptographically
 verified benchmark payload to the Cloudflare Worker ingestion endpoint.
 
 Usage:
-  python scripts/submit_benchmark.py [--endpoint URL] [--openrar PATH] [--submitter NAME] [--system NAME]
+  python scripts/submit_benchmark.py [--endpoint URL] [--openrar PATH] [--system NAME]
 """
 
 import argparse
@@ -70,19 +70,16 @@ def main():
     parser = argparse.ArgumentParser(description="Submit OpenRAR benchmark to cloud leaderboard")
     parser.add_argument(
         "--endpoint",
-        default=os.getenv("OPENRAR_BENCHMARK_ENDPOINT", "https://benchmarks.openrar.dev/api/submit"),
+        default=os.getenv("OPENRAR_BENCHMARK_ENDPOINT", "https://benchmark.openrar.workers.dev/api/submit"),
         help="Submission endpoint URL",
     )
     parser.add_argument("--openrar", default="openrar", help="Path to openrar executable")
-    parser.add_argument("--submitter", default=None, help="Submitter name or GitHub username (e.g. @octocat)")
     parser.add_argument("--system", default=None, help="System name / description (e.g. 'Desktop Custom Watercooled')")
     parser.add_argument("--dry-run", action="store_true", help="Print payload without sending")
     args = parser.parse_args()
 
     data = run_benchmark(args.openrar)
 
-    if args.submitter:
-        data["submitter"] = args.submitter
     if args.system:
         data["system"] = args.system
 

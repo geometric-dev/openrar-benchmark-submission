@@ -35,7 +35,7 @@ export function renderDashboardHtml(
         <td class="col-rank">${rankBadge}</td>
         <td class="col-cpu">
           <div class="cpu-name">${escapeHtml(e.cpu_brand)}</div>
-          <div class="system-sub">${escapeHtml(e.system)} &bull; Submitter: ${escapeHtml(e.submitter)}</div>
+          <div class="system-sub">${escapeHtml(e.system)}</div>
         </td>
         <td><span class="badge-arch">${escapeHtml(e.arch)}</span></td>
         <td>${e.threads}T (${e.logical_cores}C)</td>
